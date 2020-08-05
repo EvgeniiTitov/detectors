@@ -1,0 +1,5 @@
+1. Threads?
+    Preprocessing (into batches, yolo preproc etc) / inference / result processing
+
+
+2. Test preprocessing pipeline 2 - keeping aspect ratio with padding
