@@ -1,0 +1,5 @@
+*.pyc
+*.weights
+*.pth
+venv/
+.idea/
