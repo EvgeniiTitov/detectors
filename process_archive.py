@@ -1,7 +1,7 @@
 from typing import List
-from yolov4_tiny import YOLOv4Tiny
-from utils.read_targz_archive import extract_archive_content
-from utils.json_generator import JSONOutputGenerator
+from logo_detector.yolov4_tiny import YOLOv4Tiny
+from logo_detector.utils.read_targz_archive import extract_archive_content
+from logo_detector.utils.json_generator import JSONOutputGenerator
 import os
 import cv2
 import argparse

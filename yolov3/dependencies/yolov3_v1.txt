@@ -1,3 +1,0 @@
-countdown
-new_world
-paknsave
