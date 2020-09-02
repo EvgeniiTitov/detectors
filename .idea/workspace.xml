@@ -7,64 +7,7 @@
       <change afterPath="$PROJECT_DIR$/../aim_assistant_v2/.idea/modules.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../aim_assistant_v2/.idea/vcs.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../aim_assistant_v2/nn.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/logo_detector/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_cases/archive_1.tar.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_cases/archive_2.tar.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_cases/archive_3.tar.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/process_archive.py" beforeDir="false" afterPath="$PROJECT_DIR$/process_archive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/request.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/create_targz_archive.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/json_generator.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/read_targz_archive.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/results_processor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/dependencies/yolov3_v1.cfg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/dependencies/yolov3_v1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/dependencies/yolov3_v1.weights" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/augmentations.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/datasets.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/logger.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/parse_config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/preprocessor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/utils/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov3/yolov3.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/dependencies/weights_v1/yolov4_tiny.cfg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/dependencies/weights_v1/yolov4_tiny.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/dependencies/weights_v1/yolov4_tiny.weights" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/dependencies/weights_v2/yolov4_tiny.cfg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/dependencies/weights_v2/yolov4_tiny.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/dependencies/weights_v2/yolov4_tiny.weights" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/camera.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/coco_annotation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/darknet2onnx.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/darknet2pytorch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/onnx2tensorflow.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/pytorch2onnx.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/region_loss.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/torch_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/coco_eval.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/coco_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/engine.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/group_by_aspect_ratio.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/train.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/transforms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/tv_reference/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/utils_iou.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/utils_iou_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/tool/yolo_layer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolov4_tiny/yolov4tiny.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +22,7 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="145">
+                <state relative-caret-position="130">
                   <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
                   <folding>
                     <element signature="e#0#9#0" expanded="true" />
@@ -128,7 +71,7 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/logo_detector/yolov4_tiny/yolov4tiny.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state>
@@ -136,6 +79,15 @@
                   <folding>
                     <element signature="e#0#43#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/.gitignore">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="60">
+                  <caret line="4" column="6" lean-forward="true" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
                 </state>
               </provider>
             </entry>
@@ -238,6 +190,24 @@
             <path>
               <item name="singleview_project" type="b2602c69:ProjectViewProjectNode" />
               <item name="singleview_project" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="singleview_project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="singleview_project" type="462c0819:PsiDirectoryNode" />
+              <item name="logo_detector" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="singleview_project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="singleview_project" type="462c0819:PsiDirectoryNode" />
+              <item name="logo_detector" type="462c0819:PsiDirectoryNode" />
+              <item name="yolov4_tiny" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="singleview_project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="singleview_project" type="462c0819:PsiDirectoryNode" />
+              <item name="logo_detector" type="462c0819:PsiDirectoryNode" />
+              <item name="yolov4_tiny" type="462c0819:PsiDirectoryNode" />
+              <item name="dependencies" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -423,7 +393,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.47444445" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.7411111" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -769,7 +739,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
+        <state relative-caret-position="130">
           <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
@@ -790,13 +760,6 @@
     <entry file="file://$PROJECT_DIR$/README">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="6" lean-forward="true" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/logo_detector/yolov4_tiny/yolov4tiny.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -804,6 +767,13 @@
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="6" lean-forward="true" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
         </state>
       </provider>
     </entry>

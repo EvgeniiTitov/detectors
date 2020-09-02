@@ -3,3 +3,6 @@
 *.pth
 venv/
 .idea/
+*.tar
+*.zip
+*.gz
