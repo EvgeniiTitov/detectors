@@ -20,7 +20,7 @@ class YOLOv4Tiny:
         f"weights_spotiq_v{WEIGHTS_VERSION}"
     )
     dependencies = "yolov4_tiny"
-    conf_thresh = 0.2git
+    conf_thresh = 0.2
     NMS_thresh = 0.3
 
     def __init__(self, device: str = "gpu"):
