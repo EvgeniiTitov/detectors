@@ -20,7 +20,7 @@ def parse_arguments():
                         help="Path to data to process")
     parser.add_argument("-s", "--save_path", default=r"D:\Desktop\system_output",
                         help="Path to where store processed data")
-    parser.add_argument("--batch_size", type=int, default=5,
+    parser.add_argument("--batch_size", type=int, default=40,
                         help="Batch size for video processing")
     parser.add_argument("--device", type=str, default="cuda",
                         help="cuda or cpu")
@@ -100,7 +100,6 @@ class Detector:
             file_ids[filename] = file_id
             self.files_to_process_Q.put(file_id)
 
-        self.files_to_process_Q.put("STOP")
         return file_ids
 
     def start(self) -> None:
@@ -209,10 +208,10 @@ def main():
         device=args.device
     )
     ids = detector.process(args.folder)
-    detector.stop()
     print("\nFile ids:")
     for k, v in ids.items():
         print(k, v)
+    detector.stop()
 
 
 if __name__ == "__main__":

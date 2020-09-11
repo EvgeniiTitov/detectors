@@ -11,27 +11,37 @@ import numpy as np
 import cv2
 
 
-WEIGHTS_VERSION = 3
+WEIGHTS_VERSION = 4
 
 
 class YOLOv4Tiny:
     path_to_dependencies = os.path.join(
-        os.getcwd(), "logo_detector", "yolov4_tiny", "dependencies", f"weights_spotiq_v{WEIGHTS_VERSION}"
+        os.getcwd(), "logo_detector", "yolov4_tiny", "dependencies",
+        f"weights_spotiq_v{WEIGHTS_VERSION}"
     )
     dependencies = "yolov4_tiny"
-    conf_thresh = 0.3
+    conf_thresh = 0.2git
     NMS_thresh = 0.3
 
     def __init__(self, device: str = "gpu"):
-        config_path = os.path.join(self.path_to_dependencies, self.dependencies + ".cfg")
-        weights_path = os.path.join(self.path_to_dependencies, self.dependencies + ".weights")
-        classes_path = os.path.join(self.path_to_dependencies, self.dependencies + ".txt")
+        config_path = os.path.join(
+            self.path_to_dependencies, self.dependencies + ".cfg"
+        )
+        weights_path = os.path.join(
+            self.path_to_dependencies, self.dependencies + ".weights"
+        )
+        classes_path = os.path.join(
+            self.path_to_dependencies, self.dependencies + ".txt"
+        )
         self.model_name = "YOLOv4Tiny"
 
         if device != "cpu":
-            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.device = torch.device(
+                "cuda" if torch.cuda.is_available() else "cpu"
+            )
         else:
             self.device = torch.device("cpu")
+
         # Initialize the model
         try:
             self.model: Darknet = Darknet(config_path)
@@ -40,9 +50,11 @@ class YOLOv4Tiny:
             raise e
         print(f"Darknet initialized with net resolution of:"
               f" {self.model.height} {self.model.width}")
+
         # Load model's weights
         try:
             self.model.load_weights(weights_path)
+            print("Loaded weights version:", WEIGHTS_VERSION)
         except Exception as e:
             print(f"Failed to load model weights. Error: {e}")
             raise e
@@ -53,12 +65,12 @@ class YOLOv4Tiny:
 
         # Move model to device and prepare for inference
         self.model.to(self.device).eval()
-        print("YoloV4Tiny model successfully initialized")
+        print("YoloV4Tiny model successfully initialized\n")
 
     def predict(self, images: List[np.ndarray]) -> List[list]:
         """
-        Receives a batch of images, preprocesses them, runs through the net, postprocesses
-        detections and returns the results
+        Receives a batch of images, preprocesses them, runs through the net,
+        postprocesses detections and returns the results
         :param images:
         :return:
         """
@@ -84,8 +96,8 @@ class YOLOv4Tiny:
 
     def preprocess_image_pipeline_v1(self, images: List[np.ndarray]) -> torch.Tensor:
         """
-        Preprocesses image(s) in accordance with the preprocessing steps taken during model training
-        and collects them in batch
+        Preprocesses image(s) in accordance with the preprocessing steps taken
+        during model training and collects them in batch
         :param image:
         :return:
         """
@@ -93,15 +105,19 @@ class YOLOv4Tiny:
         processed_images = list()
         for image in images:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image, dsize=(self.model.width, self.model.height))
-            image = torch.from_numpy(image.transpose(2, 0, 1)).float().div(255).unsqueeze(0)
+            image = cv2.resize(
+                image, dsize=(self.model.width, self.model.height)
+            )
+            image = torch.from_numpy(
+                image.transpose(2, 0, 1)
+            ).float().div(255).unsqueeze(0)
             processed_images.append(image)
 
         # Collect images in a batch
         try:
             batch_images = torch.cat(processed_images)
         except Exception as e:
-            print("Failed to .cat() processed images into a tensor. Error: {e}")
+            print("Failed to concat processed imgs into a tensor. Error: {e}")
             raise e
 
         # Move batch to the same device on which the model's sitting
@@ -111,21 +127,24 @@ class YOLOv4Tiny:
 
     def preprocess_image_pipeline_v2(self, images: List[np.ndarray]) -> torch.Tensor:
         """
-        Another preprocessing approach that resizes image keeping its aspect ratio using padding
+        Another preprocessing approach that resizes image keeping its aspect
+        ratio using padding
         :param images:
         :return:
         """
         processed_images = list()
         for image in images:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = YOLOv4Tiny.preprocess_image(image=image, image_size=self.model.height)
+            image = YOLOv4Tiny.preprocess_image(
+                image=image, image_size=self.model.height
+            )
             processed_images.append(image)
 
         # Collect images in a batch
         try:
             batch_images = torch.cat(processed_images)
         except Exception as e:
-            print("Failed to .cat() processed images into a tensor. Error: {e}")
+            print("Failed to concat processed imgs into a tensor. Error: {e}")
             raise e
 
         # Move batch to the same device on which the model's sitting
@@ -134,9 +153,14 @@ class YOLOv4Tiny:
         return batch_images
 
     @staticmethod
-    def postprocess_detection_results(predictions: list, NMS_thresh: float, conf_thresh: float):
+    def postprocess_detection_results(
+            predictions: list,
+            NMS_thresh: float,
+            conf_thresh: float
+    ) -> list:
         """
-        Filters out poor detections made by the net by comparing them to the NMS and confidence thresholds
+        Filters out poor detections made by the net by comparing them to the
+        NMS and confidence thresholds
         :param predictions:
         :param NMS_thresh:
         :param conf_thresh:
@@ -182,7 +206,12 @@ class YOLOv4Tiny:
 
         return bboxes_batch
 
-    def rescale_boxes(self, boxes_for_batch: list, current_dim: int, original_shape: tuple) -> list:
+    def rescale_boxes(
+            self,
+            boxes_for_batch: list,
+            current_dim: int,
+            original_shape: tuple
+    ) -> list:
         """
 
         :param boxes_for_batch: list containing N (= batch size) lists (detections per image in the batch),
