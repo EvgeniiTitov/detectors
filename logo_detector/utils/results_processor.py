@@ -1,7 +1,8 @@
+import os
+
 import cv2
 from typing import List, Tuple, Set
 import numpy as np
-import os
 
 
 def draw_bb_for_batch_remember_detected_classes(

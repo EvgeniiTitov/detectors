@@ -3,8 +3,6 @@ import torch.nn.functional as F
 from typing import List
 from .tool.utils import *
 from .tool.darknet2pytorch import Darknet
-# from logo_detector.yolov4_tiny.tool.utils import *
-# from logo_detector.yolov4_tiny.tool.darknet2pytorch import Darknet
 import os
 import torch
 import numpy as np
@@ -23,16 +21,37 @@ class YOLOv4Tiny:
     conf_thresh = 0.2
     NMS_thresh = 0.3
 
-    def __init__(self, device: str = "gpu"):
-        config_path = os.path.join(
-            self.path_to_dependencies, self.dependencies + ".cfg"
-        )
-        weights_path = os.path.join(
-            self.path_to_dependencies, self.dependencies + ".weights"
-        )
-        classes_path = os.path.join(
-            self.path_to_dependencies, self.dependencies + ".txt"
-        )
+    def __init__(
+            self,
+            device: str = "gpu",
+            weights: str = None,
+            cfg: str = None,
+            txt: str = None,
+            conf: float = None,
+            nms: float = None
+    ):
+        if cfg:
+            config_path = cfg
+        else:
+            config_path = os.path.join(
+                self.path_to_dependencies, self.dependencies + ".cfg"
+            )
+        if weights:
+            weights_path = weights
+        else:
+            weights_path = os.path.join(
+                self.path_to_dependencies, self.dependencies + ".weights"
+            )
+        if txt:
+            classes_path = txt
+        else:
+            classes_path = os.path.join(
+                self.path_to_dependencies, self.dependencies + ".txt"
+            )
+        if conf:
+            self.conf_thresh = conf
+        if nms:
+            self.NMS_thresh = nms
         self.model_name = "YOLOv4Tiny"
 
         if device != "cpu":
@@ -93,6 +112,33 @@ class YOLOv4Tiny:
         )
 
         return boxes
+
+    def predict_with_custom_thresholds(
+            self,
+            images: List[np.ndarray],
+            conf: float = None,
+            nms: float = None
+    ) -> List[list]:
+        images_ = self.preprocess_image_pipeline_v1(images)
+        images_ = torch.autograd.Variable(images_)
+        with torch.no_grad():
+            output = self.model(images_)
+        del images_
+        if conf:
+            confidence = conf
+        else:
+            confidence = self.conf_thresh
+        if nms:
+            non_max_supr = nms
+        else:
+            non_max_supr = self.NMS_thresh
+        print(f"Conf: {confidence}, NMS: {non_max_supr}")
+        boxes = YOLOv4Tiny.postprocess_detection_results(
+            output, non_max_supr, confidence
+        )
+        return self.rescale_boxes(
+            boxes, self.model.height, images[0].shape[:2]
+        )
 
     def preprocess_image_pipeline_v1(self, images: List[np.ndarray]) -> torch.Tensor:
         """
