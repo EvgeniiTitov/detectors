@@ -6,3 +6,6 @@ venv/
 *.tar
 *.zip
 *.gz
+*.pt
+*.yaml
+*.txt
