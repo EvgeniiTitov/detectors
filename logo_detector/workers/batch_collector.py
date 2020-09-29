@@ -19,7 +19,7 @@ class BatchCollector(threading.Thread):
         self.in_q = in_q
         self.out_q = out_q
         self.progress = progress
-        print("Batch collector started")
+        print("[INFO]: Batch collector thread started")
 
     def run(self) -> None:
         while True:
@@ -71,7 +71,7 @@ class BatchCollector(threading.Thread):
                         batch_frames.append(frame)
                     to_break = True
 
-                if len(batch_frames) > 0:
+                if len(batch_frames):
                     self.out_q.put((file_id, batch_frames))
 
                 if to_break:
@@ -83,4 +83,4 @@ class BatchCollector(threading.Thread):
             self.out_q.put("END")
 
         self.out_q.put("STOP")
-        print("Batch collector killed")
+        print("Batch collector thread killed")

@@ -17,7 +17,7 @@ class Writer(threading.Thread):
     ):
         super().__init__(*args, **kwargs)
         self.in_q = in_q
-        self.result_processor = result_processor
+        self.result_proc = result_processor
         self.progress = progress
         self.save_path = save_path
         if not os.path.exists(save_path):
@@ -26,11 +26,12 @@ class Writer(threading.Thread):
             except Exception as e:
                 print("Failed to create sav dir. Error:", e)
                 raise e
+
         self.video_writter = None
         self.previous_id = None
         self.log = dict()
         self.total_seconds, self.processed_frames, self.fps = 0, 0, 0
-        print("Writer started")
+        print("[INFO]: Writer thread started")
 
     def run(self) -> None:
         while True:
@@ -65,26 +66,25 @@ class Writer(threading.Thread):
                 self.create_video_writer(out_path, (w, h))
 
             if len(detections):
-                self.result_processor.draw_bb_for_batch_remember_detected_classes(
+                self.result_proc.draw_bb_for_batch_remember_detected_classes(
                     images=batch,
                     boxes=detections
                 )
-                self.result_processor.save_batch_on_disk(
+                self.result_proc.save_batch_on_disk(
                     images=batch,
                     video_writer=self.video_writter
                 )
-
             if filetype == "video":
                 self.processed_frames += len(batch)
                 print(f"Processed {int(self.processed_frames / self.fps)} /"
                       f" {self.total_seconds} seconds")
 
-        print("Writer killed")
+        print("Writer thread killed")
 
     def refresh_video_writer(self):
         self.video_writter = None
 
-    def create_video_writer(self, store_path: str, dim: tuple):
+    def create_video_writer(self, store_path: str, dim: tuple) -> None:
         fourcc = cv2.VideoWriter_fourcc(*"MJPG")
         try:
             self.video_writter = cv2.VideoWriter(

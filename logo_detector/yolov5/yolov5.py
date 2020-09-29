@@ -1,21 +1,29 @@
 import os
 import time
+import sys
+# I am not proud of this, thank guys from ultralytics
+search_path = r"C:\\Users\\Evgenii\\logo_detector\\logo_detector\\yolov5"
+if not search_path in sys.path:
+    sys.path.append(search_path)
 
 import torch
-from typing import List
+from typing import List, Tuple
 import numpy as np
 import cv2
 
 from .models.experimental import attempt_load
 
 
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
+
 class YOLOv5:
     path_to_dependencies = os.path.join(
-        os.getcwd(), "logo_detector", "yolov5", "dependencies", "weights"
+        os.getcwd(), "logo_detector", "yolov5", "dependencies", "run6"
     )
     dependencies = "yolov5"
     conf_thresh = 0.2
-    NMS_thresh = 0.3
+    NMS_thresh = 0.2
 
     def __init__(
             self,
@@ -23,13 +31,14 @@ class YOLOv5:
             weights: str = None,
             txt: str = None,
             conf: float = None,
-            nms: float = None
+            nms: float = None,
+            img_size: int = 800
     ):
         if weights:
             weights_path = weights
         else:
             weights_path = os.path.join(
-                self.path_to_dependencies, self.dependencies + ".weights"
+                self.path_to_dependencies, self.dependencies + ".pt"
             )
         if txt:
             classes_path = txt
@@ -52,55 +61,61 @@ class YOLOv5:
 
         try:
             self.model = attempt_load(weights_path, map_location=self.device)
-            print("Model initialized")
+            self.model.eval()
+            print("v5 model initialized")
         except Exception as e:
             print(f"Failed while loading the v5 model. Error: {e}")
             raise e
 
-        # TODO: Get imag size from model, do not hardcode it here
-        self.image_size = 704
+        self.image_size = img_size
 
         # TODO: Check half precision
         self.half = False
 
-        # TODO: Read classes
-        self.classes = self.load_class_names(classes_path)
-        print("CLASSES:", self.classes)
-        self.model.eval()
-
+        try:
+            self.classes = self.model.classes
+            assert self.classes is not None and len(self.classes)
+        except:
+            self.classes = YOLOv5.load_class_names(classes_path)
+        print("[INFO]: Detecting classes: ", " ".join(self.classes))
 
     def predict(self, images: List[np.ndarray]) -> List[list]:
         # Preprocess images
-        images = self.preprocess_images(images)
-        print("BATCH SHAPE:", images.shape)
+        batch, original_shapes = self.preprocess_images(images)
         # Run model
-        preds = self.model(images)
-        print("RAW PREDS:", preds)
+        preds = self.model(batch)[0]
+
         # Postprocess predictions
         preds = self.non_max_suppression(
             preds, self.conf_thresh, self.NMS_thresh
         )
-        print("PROCESSED PREDS:", preds)
+        # Rescale boxes relatively to the original image shapes
+        assert len(preds) == len(original_shapes) == len(batch)
+        preds = self.rescale_batch_coords(preds, original_shapes, batch)
 
         return preds
 
-    def preprocess_images(self, images: List[np.ndarray]) -> torch.Tensor:
+    def preprocess_images(
+            self,
+            images: List[np.ndarray]
+    ) -> Tuple[torch.Tensor, list]:
         batch = torch.zeros(
-            (len(images), 3, self.image_size, self.image_size),
-            device=self.device
+            (len(images), 3, self.image_size, self.image_size)
         )
+        original_shapes = list()
         for i, image in enumerate(images):
-            image = self.letterbox(image, new_shape=self.image_size)[0]
-            cv2.imshow("LETTERBOX IMAGE", image)
-            cv2.waitKey(0)
+            original_shapes.append(image.shape[:2])
+            image = self.letterbox(
+                image, new_shape=self.image_size, auto=False
+            )[0]
             image = image[:, :, ::-1].transpose(2, 0, 1)
             image = np.ascontiguousarray(image)
             image = torch.from_numpy(image).to(self.device)
             image = image.half() if self.half else image.float()
             image /= 255.0
             batch[i] = image
-
-        return batch
+        batch = batch.to(self.device)
+        return batch, original_shapes
 
     def letterbox(
             self,
@@ -265,7 +280,54 @@ class YOLOv5:
         # iou = inter / (area1 + area2 - inter)
         return inter / (area1[:, None] + area2 - inter)
 
-    def load_class_names(self, namesfile):
+    def rescale_batch_coords(
+            self,
+            predictions: List[torch.Tensor],
+            original_shapes: List[tuple],
+            batch: torch.Tensor
+    ) -> List[list]:
+        out = list()
+        for i, (preds, origin_shape) in enumerate(zip(predictions, original_shapes)):
+            if preds is not None and len(preds):
+                img = batch[i]
+                preds[:, :4] = self.scale_coords(
+                    img.shape[1:], preds[:, :4], origin_shape
+                )
+                preds_ = preds.tolist()
+                for i in range(len(preds_)):
+                    preds_[i][-1] = self.classes[int(preds_[i][-1])]
+                out.append(preds_)
+            else:
+                out.append([])
+
+        return out
+
+    def scale_coords(self, img1_shape, coords, img0_shape, ratio_pad=None):
+        # Rescale coords (xyxy) from img1_shape to img0_shape
+        if ratio_pad is None:  # calculate from img0_shape
+            gain = min(img1_shape[0] / img0_shape[0],
+                       img1_shape[1] / img0_shape[1])  # gain  = old / new
+            pad = (img1_shape[1] - img0_shape[1] * gain) / 2, (
+                        img1_shape[0] - img0_shape[0] * gain) / 2  # wh padding
+        else:
+            gain = ratio_pad[0][0]
+            pad = ratio_pad[1]
+
+        coords[:, [0, 2]] -= pad[0]  # x padding
+        coords[:, [1, 3]] -= pad[1]  # y padding
+        coords[:, :4] /= gain
+        self.clip_coords(coords, img0_shape)
+        return coords
+
+    def clip_coords(self, boxes, img_shape) -> None:
+        # Clip bounding xyxy bounding boxes to image shape (height, width)
+        boxes[:, 0].clamp_(0, img_shape[1])  # x1
+        boxes[:, 1].clamp_(0, img_shape[0])  # y1
+        boxes[:, 2].clamp_(0, img_shape[1])  # x2
+        boxes[:, 3].clamp_(0, img_shape[0])  # y2
+
+    @staticmethod
+    def load_class_names(namesfile) -> List[str]:
         class_names = []
         with open(namesfile, 'r') as fp:
             lines = fp.readlines()

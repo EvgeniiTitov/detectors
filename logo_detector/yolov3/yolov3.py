@@ -1,5 +1,5 @@
-from logo_detector.yolov3 import Darknet
-from logo_detector.yolov3 import load_classes
+from logo_detector.yolov3.models import Darknet
+from logo_detector.yolov3.utils.utils import load_classes
 from torch.autograd import Variable
 import torch
 import os

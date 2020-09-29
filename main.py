@@ -6,6 +6,8 @@ import argparse
 import cv2
 
 from logo_detector.yolov4_tiny import YOLOv4Tiny
+from logo_detector.yolov5 import YOLOv5
+from logo_detector.yolov3 import YOLOv3Model
 import logo_detector.utils.results_processor as res_procesor
 from logo_detector.workers import BatchCollector, NetRunner, Writer
 
@@ -24,6 +26,7 @@ def parse_arguments():
                         help="Batch size for video processing")
     parser.add_argument("--device", type=str, default="cuda",
                         help="cuda or cpu")
+    parser.add_argument("--model", type=str, choices=["v3", "v4", "v5"])
     arguments = parser.parse_args()
 
     return arguments
@@ -34,7 +37,8 @@ class Detector:
             self,
             save_path: str,
             batch_size: int,
-            device: str = "cuda"
+            device: str = "cuda",
+            model_name: str = "v5"
     ):
         self.save_path = save_path
         self.progress = dict()
@@ -44,9 +48,19 @@ class Detector:
         self.nn_to_writer_Q = queue.Queue(maxsize=4)
 
         try:
-            model = YOLOv4Tiny(device=device)
+            if model_name == "v3":
+                model = YOLOv3Model()
+                print("[INFO]: Loading v3 model...")
+            elif model_name == "v4":
+                print("[INFO]: Loading v4 model...")
+                model = YOLOv4Tiny(device=device)
+            elif model_name == "v5":
+                print("[INFO]: Loading v5 model...")
+                model = YOLOv5(device=device)
+            else:
+                raise Exception("Incorrect model name provided")
         except Exception as e:
-            print("Failed to initialize the model. Error:", e)
+            print("[ERROR]: Failed to initialize the model. Error:", e)
             raise e
 
         self.threads = list()
@@ -72,7 +86,6 @@ class Detector:
             result_processor=res_procesor
         )
         self.threads.append(self.writer)
-
         self.start()
 
     def process(self, path_to_data: str) -> dict:
@@ -113,7 +126,7 @@ class Detector:
 
 
 def process_files(
-        model: YOLOv4Tiny,
+        model: object,
         path_to_data: str,
         save_path: str,
         batch_size: int,
@@ -124,15 +137,15 @@ def process_files(
         if not os.path.splitext(file)[-1].lower() in ALLOWED_EXTS:
             continue
 
-        print("\nProcessing:", file)
+        print("\n[INFO]: Processing:", file)
         cap = cv2.VideoCapture(os.path.join(path_to_data, file))
         if not cap.isOpened():
-            print("Failed to create a cap for:", path_to_data)
+            print("[ERROR]: Failed to create a cap for:", path_to_data)
             continue
 
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        print(f"Video resolution: {frame_width} {frame_height}")
+        print(f"[INFO]: Video resolution: {frame_width} {frame_height}")
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         total_seconds = int(total_frames / fps)

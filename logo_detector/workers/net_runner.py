@@ -15,7 +15,7 @@ class NetRunner(threading.Thread):
         self.in_q = in_q
         self.out_q = out_q
         self.model = model
-        print("Net runner started")
+        print("[INFO]: Net runner thread started")
 
     def run(self) -> None:
         while True:
@@ -28,9 +28,14 @@ class NetRunner(threading.Thread):
                 continue
 
             file_id, batch = input_
-            detections = self.model.predict(images=batch)
+            try:
+                detections = self.model.predict(images=batch)
+            except Exception as e:
+                print(f"[ERROR]: Net runner failed to run the model. Error: {e}")
+                self.out_q.put("STOP")
+                break
 
             self.out_q.put((file_id, batch, detections))
 
         self.out_q.put("STOP")
-        print("Net runner killed")
+        print("Net runner thread killed")
