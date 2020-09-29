@@ -18,7 +18,7 @@ if __name__ == "__main__":
     model = YOLOv5()
     print("[INFO]: Model loaded")
     test_dir = r"D:\SingleView\SpotIQ\tests\RETAIL\cropped_test_ads"
-    save_path = r"D:\SingleView\SpotIQ\DELETE_ME"
+    save_path = r"D:\SingleView\SpotIQ\DELETE_ME\test"
     BATCH_SIZE = 15
 
     total, total_correct_classifications = 0, 0
