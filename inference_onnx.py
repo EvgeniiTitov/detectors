@@ -212,7 +212,11 @@ def draw_boxes(
 
 def main():
     # --- LOAD THE ONNX MODEL ---
-    model_path = r"logo_detector\yolov5\dependencies\run6\best.onnx"
+    model_path = r"D:\SingleView\SpotIQ\training_results\v5\channels" \
+                 r"\v5_1_800\best.onnx"
+    test_dir = r"D:\SingleView\SpotIQ\tests\CHANNELS\cropped_ads"
+    save_dir = r"D:\SingleView\SpotIQ\tests\RESULTS\CHANNELS\onnx_inference"
+
     try:
         session = rt.InferenceSession(model_path)
     except Exception as e:
@@ -221,15 +225,14 @@ def main():
     batch_size = session.get_inputs()[0].shape[0]
     img_height = session.get_inputs()[0].shape[2]
     img_width = session.get_inputs()[0].shape[3]
+    print(f"[INFO]: Inference image size: {img_height} {img_width}")
 
     # --- LOAD CLASSES ---
     cls_path = r"logo_detector\yolov5\dependencies\run6\yolov5.txt"
     classes = load_class_names(cls_path)
+    print("[INFO]: Inference classes:", " ".join(map(str, classes)))
 
-    test_dir = r"D:\SingleView\SpotIQ\tests\RETAIL\test_frames"
-    save_dir = r"D:\SingleView\SpotIQ\DELETE_ME\test"
     for element in os.listdir(test_dir):
-
         # --- OPEN AND PREPROCESS IMAGE ---
         path_to_image = os.path.join(test_dir, element)
         image = cv2.imread(path_to_image)

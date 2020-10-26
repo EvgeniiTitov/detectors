@@ -36,7 +36,6 @@ class Writer(threading.Thread):
     def run(self) -> None:
         while True:
             input_ = self.in_q.get()
-
             if input_ == "STOP":
                 break
             elif input_ == "END":
@@ -70,10 +69,15 @@ class Writer(threading.Thread):
                     images=batch,
                     boxes=detections
                 )
+            if filetype == "video":
                 self.result_proc.save_batch_on_disk(
                     images=batch,
                     video_writer=self.video_writter
                 )
+            elif filetype == "photo" and len(batch) == 1:
+                out_path = os.path.join(self.save_path, filename + "_out.jpg")
+                cv2.imwrite(out_path, batch[0])
+
             if filetype == "video":
                 self.processed_frames += len(batch)
                 print(f"Processed {int(self.processed_frames / self.fps)} /"

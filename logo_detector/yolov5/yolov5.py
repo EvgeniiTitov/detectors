@@ -19,7 +19,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 class YOLOv5:
     path_to_dependencies = os.path.join(
-        os.getcwd(), "logo_detector", "yolov5", "dependencies", "run6"
+        os.getcwd(), "logo_detector", "yolov5", "dependencies", "run9"
     )
     dependencies = "yolov5"
     conf_thresh = 0.2

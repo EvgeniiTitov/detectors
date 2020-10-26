@@ -26,7 +26,6 @@ class BatchCollector(threading.Thread):
             input_ = self.in_q.get()
             if input_ == "STOP":
                 break
-
             file_id = input_
             file_path = self.progress[file_id]["file_path"]
             file_type = self.progress[file_id]["filetype"]
