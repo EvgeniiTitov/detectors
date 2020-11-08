@@ -18,8 +18,8 @@ class YOLOv4Tiny:
         f"weights_spotiq_v{WEIGHTS_VERSION}"
     )
     dependencies = "yolov4_tiny"
-    conf_thresh = 0.2
-    NMS_thresh = 0.3
+    conf_thresh = 0.1
+    NMS_thresh = 0.1
 
     def __init__(
             self,
@@ -73,14 +73,15 @@ class YOLOv4Tiny:
         # Load model's weights
         try:
             self.model.load_weights(weights_path)
-            print("Loaded weights version:", WEIGHTS_VERSION)
+            print("Loaded weights:", weights_path)
         except Exception as e:
             print(f"Failed to load model weights. Error: {e}")
             raise e
 
         # Load classes
         self.classes = load_class_names(classes_path)
-        print(f"Total of {len(self.classes)} classes read")
+        print(f"Total of {len(self.classes)} classes read:"
+              f" {' '.join([str(e) for e in self.classes])}")
 
         # Move model to device and prepare for inference
         self.model.to(self.device).eval()

@@ -23,7 +23,7 @@ class YOLOv5:
     )
     dependencies = "yolov5"
     conf_thresh = 0.2
-    NMS_thresh = 0.2
+    NMS_thresh = 0.1
 
     def __init__(
             self,
