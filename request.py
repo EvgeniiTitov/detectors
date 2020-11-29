@@ -10,10 +10,42 @@ def ping():
     print(r.text)
 
 
-def detect_on_archives_large_model():
-    URL = r"http://localhost:8091/api/v1/labels2"
+def detect_large_channels_model():
+    URL = r"http://localhost:8091/api/v1/labels/large_channels"
     archive = r"C:\Users\Evgenii\sv-tv-scopes-detector\tests\scopesdetector" \
-              r"\service\prediction\test_data_large_model.tar.gz"
+              r"\service\prediction\large_channels.tar.gz"
+    data = dict()
+    with open(archive, "rb") as f:
+        content = f.read()
+        data["file"] = io.BytesIO(content)
+    print("\nMaking request to the large channels model")
+    r = requests.post(URL, files=data)
+    json_response = r.json()
+    json_response.sort(key=lambda e: int(e["file"][:-4]))
+    for e in json_response:
+        print(e)
+
+
+def detect_channels_model():
+    URL = r"http://localhost:8091/api/v1/labels/channels"
+    archive = r"C:\Users\Evgenii\sv-tv-scopes-detector\tests\scopesdetector" \
+              r"\service\prediction\channels.tar.gz"
+    data = dict()
+    with open(archive, "rb") as f:
+        content = f.read()
+        data["file"] = io.BytesIO(content)
+    print("\nMaking request to the channels model")
+    r = requests.post(URL, files=data)
+    json_response = r.json()
+    json_response.sort(key=lambda e: int(e["file"][:-4]))
+    for e in json_response:
+        print(e)
+
+
+def detect_on_archives_large_model():
+    URL = r"http://localhost:8091/api/v1/labels/retail"
+    archive = r"C:\Users\Evgenii\sv-tv-scopes-detector\tests\scopesdetector" \
+              r"\service\prediction\retail_large.gz"
     data = dict()
     with open(archive, "rb") as f:
         content = f.read()
@@ -44,14 +76,13 @@ def detect_on_archives_large_model():
         print()
         print(e)
 
+
 def detect_on_archives_small_model():
     URL = r"http://localhost:8091/api/v1/labels"
     path_to_archives = [
-        r"C:\Users\Evgenii\Desktop\Python_Programming\Python_Projects\singleview_project\test\test_cases\model_3_classes\archive_1.tar.gz",
-        r"C:\Users\Evgenii\Desktop\Python_Programming\Python_Projects\singleview_project\test\test_cases\model_3_classes\archive_2.tar.gz",
-        r"C:\Users\Evgenii\Desktop\Python_Programming\Python_Projects\singleview_project\test\test_cases\model_3_classes\archive_3.tar.gz",
-        r"C:\Users\Evgenii\Desktop\Python_Programming\Python_Projects\singleview_project\test\test_cases\model_3_classes\archive_4.tar.gz",
-        r"C:\Users\Evgenii\Desktop\Python_Programming\Python_Projects\singleview_project\test\test_cases\model_3_classes\archive_5.tar.gz"
+        r"C:\Users\Evgenii\sv-tv-scopes-detector\tests\scopesdetector\service\prediction\retail_small_1.tar.gz",
+        r"C:\Users\Evgenii\sv-tv-scopes-detector\tests\scopesdetector\service\prediction\retail_small_4.tar.gz",
+        r"C:\Users\Evgenii\sv-tv-scopes-detector\tests\scopesdetector\service\prediction\retail_small_5.tar.gz"
     ]
     for path_to_archive in path_to_archives:
         data = {}
@@ -92,7 +123,9 @@ def classify():
 
 if __name__ == "__main__":
     ping()
-    #detect_on_archives_small_model()
+    detect_on_archives_small_model()
     detect_on_archives_large_model()
+    detect_channels_model()
+    detect_large_channels_model()
     #classify()
     ping()
