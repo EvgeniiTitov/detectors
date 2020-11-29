@@ -27,7 +27,7 @@ def draw_bb_for_batch_remember_detected_classes(
             )
             text = "{}_{:.4f}".format(bb[-1], bb[-2])
             cv2.putText(
-                image, text, (int(bb[0]), int(bb[1]) - 5),
+                image, text, (int(bb[0]) + 5, int(bb[1]) + 25),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, colour, thickness=2
             )
             detected_classes.add(bb[-1])

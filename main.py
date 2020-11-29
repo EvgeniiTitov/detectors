@@ -4,6 +4,7 @@ import uuid
 import queue
 import argparse
 import cv2
+from typing import Union, Any
 
 from logo_detector.yolov4_tiny import YOLOv4Tiny
 from logo_detector.yolov5 import YOLOv5
@@ -37,32 +38,13 @@ class Detector:
             self,
             save_path: str,
             batch_size: int,
-            device: str = "cuda",
-            model_name: str = "v5"
+            model: Union[Any, YOLOv3Model, YOLOv4Tiny, YOLOv5]
     ):
         self.save_path = save_path
         self.progress = dict()
-
         self.files_to_process_Q = queue.Queue()
         self.reader_to_nn_Q = queue.Queue(maxsize=3)
         self.nn_to_writer_Q = queue.Queue(maxsize=4)
-
-        try:
-            if model_name == "v3":
-                model = YOLOv3Model()
-                print("[INFO]: Loading v3 model...")
-            elif model_name == "v4":
-                print("[INFO]: Loading v4 model...")
-                model = YOLOv4Tiny(device=device)
-            elif model_name == "v5":
-                print("[INFO]: Loading v5 model...")
-                model = YOLOv5(device=device)
-            else:
-                raise Exception("Incorrect model name provided")
-        except Exception as e:
-            print("[ERROR]: Failed to initialize the model. Error:", e)
-            raise e
-
         self.threads = list()
         self.batch_collector = BatchCollector(
             batch_size=batch_size,
@@ -71,7 +53,7 @@ class Detector:
             progress=self.progress
         )
         self.threads.append(self.batch_collector)
-
+        print(f"[INFO]: Detector's running {model.model_name} model")
         self.net_runner = NetRunner(
             in_q=self.reader_to_nn_Q,
             out_q=self.nn_to_writer_Q,
@@ -215,10 +197,34 @@ def main():
     if not os.path.exists(args.save_path):
         os.mkdir(args.save_path)
 
+    model_name = args.model
+    device = args.device
+    try:
+        if model_name == "v3":
+            model = YOLOv3Model()
+            print("[INFO]: Loading v3 model...")
+        elif model_name == "v4":
+            print("[INFO]: Loading v4 model...")
+            model = YOLOv4Tiny(
+                device=device,
+                weights=r"D:\FutureLab\training_results\towers_3_608608\v4_tiny.weights",
+                cfg=r"D:\FutureLab\training_results\towers_3_608608\v4_tiny.cfg",
+                txt=r"D:\FutureLab\training_results\towers_3_608608\v4_tiny.txt"
+            )
+        elif model_name == "v5":
+            print("[INFO]: Loading v5 model...")
+            model = YOLOv5(device=device)
+        else:
+            raise Exception("Incorrect model name provided")
+    except Exception as e:
+        print(f"[ERROR]: Failed to initialize the model: {model_name}. "
+              f"Error: {e}")
+        raise e
+
     detector = Detector(
         save_path=args.save_path,
         batch_size=int(args.batch_size),
-        device=args.device
+        model=model
     )
     ids = detector.process(args.folder)
     print("\nFile ids:")
