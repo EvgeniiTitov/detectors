@@ -17,7 +17,7 @@ def draw_bb_for_batch_remember_detected_classes(
     :param colour: colour of bounding boxes
     :return:
     """
-    assert len(images) == len(boxes), "Number of images and detections do not match"
+    assert len(images) == len(boxes), "Number of images != detections"
     detected_classes = set()
     for image, bbs in zip(images, boxes):
         for bb in bbs:
@@ -40,10 +40,11 @@ def save_batch_on_disk(
         video_writer: cv2.VideoWriter = None
 ) -> None:
     """"""
-    for image in images:
-        video_writer.write(image)
-
-    return
+    if video_writer:
+        for image in images:
+            video_writer.write(image)
+    else:
+        print("[ERROR]: Video writer is not initialized!")
 
 
 def create_log_file(payload: dict, save_path: str, filename: str) -> bool:
@@ -55,7 +56,8 @@ def create_log_file(payload: dict, save_path: str, filename: str) -> bool:
             file.write(f"Detection results for: {filename}\n")
             file.write("\nsec: detections\n")
             for k, v in payload.items():
-                line_to_write = f" {k}: {' '.join([classname for classname in v])}\n"
+                line_to_write = f" {k}: " \
+                                f"{' '.join([classname for classname in v])}\n"
                 file.write(line_to_write)
     except Exception as e:
         print(f"Failed to write results to the log file. Error: {e}")

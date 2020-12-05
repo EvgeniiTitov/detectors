@@ -20,18 +20,17 @@ class NetRunner(threading.Thread):
     def run(self) -> None:
         while True:
             input_ = self.in_q.get()
-
             if input_ == "STOP":
                 break
             elif input_ == "END":
                 self.out_q.put("END")
                 continue
-
             file_id, batch = input_
             try:
-                detections = self.model.predict(images=batch)
+                detections = self.model.predict(batch)
             except Exception as e:
-                print(f"[ERROR]: Net runner failed to run the model. Error: {e}")
+                print(f"[ERROR]: Net runner failed to run the model. "
+                      f"Error: {e}")
                 self.out_q.put("STOP")
                 break
 

@@ -1,11 +1,14 @@
-from logo_detector.yolov3.models import Darknet
-from logo_detector.yolov3.utils.utils import load_classes
-from torch.autograd import Variable
-import torch
 import os
 
+import torch
+from torch.autograd import Variable
 
-class YOLOv3Model:
+from logo_detector.yolov3.models import Darknet
+from logo_detector.yolov3.utils.utils import load_classes
+from logo_detector.abstract_model import AbstractModel
+
+
+class YOLOv3Model(AbstractModel):
     path_to_dependencies = os.path.join(os.getcwd(), "yolov3", "dependencies")
     dependencies = "yolov3_v1"
     net_resolution = 608
@@ -14,9 +17,15 @@ class YOLOv3Model:
 
     def __init__(self, device: str = "gpu"):
         print("\nInitializing YOLOv3 model")
-        config_path = os.path.join(self.path_to_dependencies, self.dependencies + ".cfg")
-        weights_path = os.path.join(self.path_to_dependencies, self.dependencies + ".weights")
-        classes_path = os.path.join(self.path_to_dependencies, self.dependencies + ".txt")
+        config_path = os.path.join(
+            self.path_to_dependencies, self.dependencies + ".cfg"
+        )
+        weights_path = os.path.join(
+            self.path_to_dependencies, self.dependencies + ".weights"
+        )
+        classes_path = os.path.join(
+            self.path_to_dependencies, self.dependencies + ".txt"
+        )
 
         self.device = device
         if device != "cpu":

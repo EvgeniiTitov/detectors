@@ -13,7 +13,7 @@ class BatchCollector(threading.Thread):
             progress: dict,
             *args,
             **kwargs
-    ):
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.batch_size = batch_size
         self.in_q = in_q
@@ -30,15 +30,13 @@ class BatchCollector(threading.Thread):
             file_path = self.progress[file_id]["file_path"]
             file_type = self.progress[file_id]["filetype"]
             if not os.path.exists(file_path):
-                print(f"Failed to file {file_path} on disk")
+                print(f"Failed to find the file: {file_path} on disk")
                 continue
-
             try:
                 cap = cv2.VideoCapture(file_path)
+                assert cap.isOpened(), "Cap is not opened!"
             except Exception as e:
                 print(f"Failed to open: {file_path}. Error: {e}")
-                continue
-            if not cap.isOpened():
                 continue
 
             frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -46,7 +44,6 @@ class BatchCollector(threading.Thread):
             fps = int(cap.get(cv2.CAP_PROP_FPS))
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             total_seconds = total_frames // fps
-
             self.progress[file_id]["frame_width"] = frame_width
             self.progress[file_id]["frame_height"] = frame_height
             self.progress[file_id]["fps"] = fps
@@ -80,6 +77,5 @@ class BatchCollector(threading.Thread):
 
             cap.release()
             self.out_q.put("END")
-
         self.out_q.put("STOP")
         print("Batch collector thread killed")

@@ -7,23 +7,38 @@ import numpy as np
 import cv2
 import torch
 
+from logo_detector.abstract_model import AbstractModel
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-class YOLOv5ONNX:
+class YOLOv5ONNX(AbstractModel):
     _anchors = [
         [10, 13, 16, 30, 33, 23],
         [30, 61, 62, 45, 59, 119],
         [116, 90, 156, 198, 373, 326]
     ]
-
+    path_to_dependencies = os.path.join(
+        os.getcwd(), "logo_detector", "yolov5", "dependencies"
+    )
     def __init__(
-            self, model_path: str, nms: float = None, conf: float = None):
+            self,
+            model_path: str = None,
+            classes_txt_path: str = None,
+            nms: float = None,
+            conf: float = None
+    ):
+        if model_path:
+            path_to_model = model_path
+        else:
+            path_to_model = os.path.join(
+                YOLOv5ONNX.path_to_dependencies, "run10", "v5.onnx"
+            )
         try:
-            self._session = rt.InferenceSession(model_path)
+            self._session = rt.InferenceSession(path_to_model)
             logger.info("ONNX session successfully started")
         except Exception as e:
             logger.info(f"Failed to init ONNX session. Error: {e}")
@@ -40,10 +55,13 @@ class YOLOv5ONNX:
         self._batch_size = self._session.get_inputs()[0].shape[0]
         self._img_height = self._session.get_inputs()[0].shape[2]
         self._img_width = self._session.get_inputs()[0].shape[3]
-        # TODO: Remove hardcoded path
-        self._classes = YOLOv5ONNX.load_class_names(
-            r"D:\Desktop\SIngleView\v5batch2classes.txt"
-        )
+        if classes_txt_path:
+            path_to_txt = classes_txt_path
+        else:
+            path_to_txt = os.path.join(
+                YOLOv5ONNX.path_to_dependencies, "run10", "v5.txt"
+            )
+        self._classes = YOLOv5ONNX.load_class_names(path_to_txt)
         logger.info(f"Model's info: batch size {self._batch_size}, img height"
                     f" {self._img_height}, img width {self._img_width}, "
                     f"classes: {' '.join([e.upper() for e in self._classes])}")
@@ -53,7 +71,7 @@ class YOLOv5ONNX:
         preprocessed_img = self._preprocess_image(image)
         outputs = self._session.run(None, {self._input_name: preprocessed_img})
         detections = self._apply_nms_conf_thresholds(outputs)[0]  # batch 1
-        if detections:
+        if detections is not None:
             scaled_detections = self._postprocess_detections(
                 detections, original_image
             )
@@ -251,13 +269,13 @@ class YOLOv5ONNX:
 
     @staticmethod
     def load_class_names(namesfile) -> List[str]:
-        class_names = []
-        with open(namesfile, 'r') as fp:
-            lines = fp.readlines()
-        for line in lines:
-            line = line.rstrip()
-            class_names.append(line)
-        return class_names
+        try:
+            with open(namesfile, 'r') as fp:
+                lines = fp.readlines()
+        except Exception as e:
+            print(f"Failed to read classes txt. Error: {e}")
+            raise e
+        return [e.rstrip() for e in lines]
 
     @staticmethod
     def scale_coords(img1_shape, coords, img0_shape, ratio_pad=None):

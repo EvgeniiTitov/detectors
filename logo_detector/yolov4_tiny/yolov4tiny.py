@@ -8,11 +8,12 @@ import torch
 import numpy as np
 import cv2
 
+from logo_detector.abstract_model import AbstractModel
 
 WEIGHTS_VERSION = 4
 
 
-class YOLOv4Tiny:
+class YOLOv4Tiny(AbstractModel):
     path_to_dependencies = os.path.join(
         os.getcwd(), "logo_detector", "yolov4_tiny", "dependencies",
         f"weights_spotiq_v{WEIGHTS_VERSION}"

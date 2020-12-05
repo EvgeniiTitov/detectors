@@ -12,12 +12,13 @@ import numpy as np
 import cv2
 
 from .models.experimental import attempt_load
+from logo_detector.abstract_model import AbstractModel
 
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 
-class YOLOv5:
+class YOLOv5(AbstractModel):
     path_to_dependencies = os.path.join(
         os.getcwd(), "logo_detector", "yolov5", "dependencies", "run9"
     )
