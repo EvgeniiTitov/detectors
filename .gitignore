@@ -9,3 +9,4 @@ venv/
 *.pt
 *.yaml
 *.txt
+*.onnx
