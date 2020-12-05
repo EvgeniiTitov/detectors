@@ -1,7 +1,6 @@
 import os
 import time
 import sys
-# I am not proud of this, thank guys from ultralytics
 search_path = r"C:\\Users\\Evgenii\\logo_detector\\logo_detector\\yolov5"
 if not search_path in sys.path:
     sys.path.append(search_path)
